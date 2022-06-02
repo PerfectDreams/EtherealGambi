@@ -1,6 +1,6 @@
 # EtherealGambi
 
-Alternative to [https://github.com/PerfectDreams/DreamStorageService], but instead of storing files on a database, it is stored on the file system itself.
+Alternative to [DreamStorageService](https://github.com/PerfectDreams/DreamStorageService), but instead of storing files on a database, it is stored on the file system itself.
 
 I made this because most image optimization pipelines (like Cloudflare Images) are SO EXPENSIVE, OMG! I would gladly pay for a good service, but CF Images charges per image served, even if the image was cached!
 
