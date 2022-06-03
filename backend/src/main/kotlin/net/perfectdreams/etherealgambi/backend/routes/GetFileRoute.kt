@@ -59,7 +59,10 @@ class GetFileRoute(val m: EtherealGambi) : BaseRoute("/{file...}") {
 
                             val file = imageInfo.createImageVariant(variant)
 
-                            call.respondBytes(file.readBytes())
+                            call.respondBytes(
+                                file.readBytes(),
+                                variant.imageType.contentType
+                            )
                         }
                     }
                 }
