@@ -210,7 +210,9 @@ class EtherealGambi {
         loadAndSaveMutex.withLock {
             logger.info { "Saving image informations to \"$imageInfosTempFile\"..." }
 
-            imageInfosTempFile.writeText(
+            // While Atomic moves are nice, they don't seem to play nice with Docker binds :(
+            // imageInfosTempFile.writeText(
+            imageInfosFile.writeText(
                 Json.encodeToString(
                     originalImageInfos.map {
                         it.key to it.value.data
@@ -219,7 +221,7 @@ class EtherealGambi {
             )
 
             // By using atomic moves, we can be 100% sure that the imagesInfoFile will NEVER have a "half written" file
-            imageInfosTempFile.toPath().moveTo(imageInfosFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            // imageInfosTempFile.toPath().moveTo(imageInfosFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
         }
     }
 
