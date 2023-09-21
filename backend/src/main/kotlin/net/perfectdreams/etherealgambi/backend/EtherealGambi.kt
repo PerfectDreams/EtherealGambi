@@ -112,6 +112,7 @@ class EtherealGambi {
             // Useful to access and manipulate images in a canvas
             install(CORS) {
                 anyHost()
+                allowHeader(HttpHeaders.AccessControlAllowOrigin)
                 allowMethod(HttpMethod.Get)
                 allowMethod(HttpMethod.Post)
                 allowMethod(HttpMethod.Options)
