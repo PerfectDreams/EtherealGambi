@@ -25,3 +25,7 @@ publishing {
         }
     }
 }
+
+kotlin {
+    jvmToolchain(17)
+}

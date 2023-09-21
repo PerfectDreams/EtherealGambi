@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("com.google.cloud.tools.jib") version "3.2.1"
+    id("com.google.cloud.tools.jib") version "3.3.2"
 }
 
 repositories {
@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.compression)
     implementation(libs.ktor.server.caching.headers)
+    implementation(libs.ktor.server.cors)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":common"))
@@ -50,6 +51,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+kotlin {
+    jvmToolchain(17)
 }

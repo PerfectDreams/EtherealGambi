@@ -7,12 +7,12 @@ include(":client")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            val kotlin = version("kotlin", "1.6.21")
-            val kotlinXSerialization = version("kotlinx-serialization", "1.3.2")
-            val ktor = version("ktor", "2.0.2")
+            val kotlin = version("kotlin", "1.9.10")
+            val kotlinXSerialization = version("kotlinx-serialization", "1.6.0")
+            val ktor = version("ktor", "2.3.3")
 
-            library("kotlinx-coroutines-core", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.6.1")
-            library("kotlin-logging", "io.github.microutils", "kotlin-logging").version("2.1.21")
+            library("kotlinx-coroutines-core", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.7.3")
+            library("kotlin-logging", "io.github.microutils", "kotlin-logging").version("3.0.5")
 
             library("kotlinx-serialization-core", "org.jetbrains.kotlinx", "kotlinx-serialization-core").versionRef(kotlinXSerialization)
             library("kotlinx-serialization-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef(kotlinXSerialization)
@@ -23,6 +23,7 @@ dependencyResolutionManagement {
             library("ktor-server-netty", "io.ktor", "ktor-server-netty").versionRef(ktor)
             library("ktor-server-compression", "io.ktor", "ktor-server-compression").versionRef(ktor)
             library("ktor-server-caching-headers", "io.ktor", "ktor-server-caching-headers").versionRef(ktor)
+            library("ktor-server-cors", "io.ktor", "ktor-server-cors").versionRef(ktor)
         }
     }
 }
