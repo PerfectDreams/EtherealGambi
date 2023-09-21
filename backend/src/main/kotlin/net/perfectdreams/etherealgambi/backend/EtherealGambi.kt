@@ -7,12 +7,10 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.plugins.compression.*
-import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
@@ -22,17 +20,10 @@ import net.perfectdreams.etherealgambi.backend.utils.GIFImageInfo
 import net.perfectdreams.etherealgambi.backend.utils.ImageInfo
 import net.perfectdreams.etherealgambi.backend.utils.PNGImageInfo
 import net.perfectdreams.etherealgambi.backend.utils.SimpleImageInfo
-import net.perfectdreams.etherealgambi.data.DefaultImageVariant
-import net.perfectdreams.etherealgambi.data.ImageInfoData
-import net.perfectdreams.etherealgambi.data.ImageType
-import net.perfectdreams.etherealgambi.data.ImageVariant
-import net.perfectdreams.etherealgambi.data.ScaleDownToWidthImageVariant
-import net.perfectdreams.etherealgambi.data.ScaleDownToWidthImageVariantPreset
+import net.perfectdreams.etherealgambi.data.*
 import java.io.File
-import java.nio.file.StandardCopyOption
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.thread
-import kotlin.io.path.moveTo
 import kotlin.system.exitProcess
 
 class EtherealGambi {
@@ -107,19 +98,6 @@ class EtherealGambi {
                             null
                     } else null
                 }
-            }
-
-            // Useful to access and manipulate images in a canvas
-            install(CORS) {
-                allowHeader(HttpHeaders.AccessControlAllowOrigin)
-                allowHeader(HttpHeaders.ContentType)
-                allowMethod(HttpMethod.Get)
-                allowMethod(HttpMethod.Post)
-                allowMethod(HttpMethod.Options)
-                allowMethod(HttpMethod.Put)
-                allowMethod(HttpMethod.Patch)
-                allowMethod(HttpMethod.Delete)
-                anyHost()
             }
 
             routing {
