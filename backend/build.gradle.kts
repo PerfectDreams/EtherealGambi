@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.compression)
     implementation(libs.ktor.server.caching.headers)
+    implementation(libs.ktor.server.cors)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":common"))

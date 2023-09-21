@@ -7,6 +7,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.plugins.compression.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -98,6 +99,19 @@ class EtherealGambi {
                             null
                     } else null
                 }
+            }
+
+            // Useful for images in a JavaScript canvas, since by default you CAN'T manipulate external images in a Canvas
+            install(CORS) {
+                anyHost()
+                allowMethod(HttpMethod.Get)
+                allowMethod(HttpMethod.Post)
+                allowMethod(HttpMethod.Options)
+                allowMethod(HttpMethod.Put)
+                allowMethod(HttpMethod.Patch)
+                allowMethod(HttpMethod.Delete)
+                allowHeader(HttpHeaders.AccessControlAllowOrigin)
+                allowHeader(HttpHeaders.ContentType)
             }
 
             routing {

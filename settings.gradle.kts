@@ -23,6 +23,7 @@ dependencyResolutionManagement {
             library("ktor-server-netty", "io.ktor", "ktor-server-netty").versionRef(ktor)
             library("ktor-server-compression", "io.ktor", "ktor-server-compression").versionRef(ktor)
             library("ktor-server-caching-headers", "io.ktor", "ktor-server-caching-headers").versionRef(ktor)
+            library("ktor-server-cors", "io.ktor", "ktor-server-cors").versionRef(ktor)
         }
     }
 }
