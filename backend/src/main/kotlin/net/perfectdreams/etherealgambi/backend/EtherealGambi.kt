@@ -149,11 +149,12 @@ class EtherealGambi(val config: EtherealGambiConfig) {
             when (imageType) {
                 ImageType.PNG -> PNGImageInfo(this, data)
                 ImageType.GIF -> GIFImageInfo(this, data)
+                ImageType.JPEG -> JPEGImageInfo(this, data)
             }
         }
     }
 
-    fun getVariantFromFileName(fileNameWithUnknownVariant: String): VariantResult {
+    fun getVariantFromFileName(pathWithoutFile: String, fileNameWithUnknownVariant: String): VariantResult {
         val nameWithoutExtension = fileNameWithUnknownVariant.substringBeforeLast(".")
         val extension = fileNameWithUnknownVariant.substringAfterLast(".")
             .lowercase()
@@ -162,8 +163,13 @@ class EtherealGambi(val config: EtherealGambiConfig) {
         val variantResult = GetFileRoute.variantRegex.findAll(nameWithoutExtension)
             .lastOrNull()
 
+        if (variantResult != null && variantResult.groupValues[1] == "original") {
+            val fileNameWithoutTheVariant = nameWithoutExtension.replace("@original", "")
+            return OriginalFile("$pathWithoutFile/$fileNameWithoutTheVariant.$extension")
+        }
+
         // GIF doesn't support scaling down... yet
-        if (variantResult != null && imageType != ImageType.GIF) {
+        if (variantResult != null && imageType != ImageType.GIF && imageType != ImageType.JPEG) {
             val variantPreset = scaleDownToWidthVariantsPresets.firstOrNull { it.name == variantResult.groupValues[1] } ?: return VariantNotFound
 
             val fileNameWithoutTheVariant = nameWithoutExtension.replace("@${variantPreset.name}", "")
@@ -176,9 +182,11 @@ class EtherealGambi(val config: EtherealGambiConfig) {
                 fileNameWithoutTheVariant
             )
         } else {
+            val fileNameWithoutTheVariant = nameWithoutExtension.replace(GetFileRoute.variantRegex, "")
+
             return VariantFound(
                 DefaultImageVariant(imageType),
-                nameWithoutExtension
+                fileNameWithoutTheVariant
             )
         }
     }
@@ -204,6 +212,7 @@ class EtherealGambi(val config: EtherealGambiConfig) {
                             it.key to when (it.value.imageType) {
                                 ImageType.PNG -> PNGImageInfo(this, it.value)
                                 ImageType.GIF -> GIFImageInfo(this, it.value)
+                                ImageType.JPEG -> JPEGImageInfo(this, it.value)
                             }
                         }
                         .toMap()
@@ -237,4 +246,5 @@ class EtherealGambi(val config: EtherealGambiConfig) {
         val variant: ImageVariant,
         val nameWithoutExtension: String,
     ) : VariantResult()
+    data class OriginalFile(val path: String) : VariantResult()
 }

@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.perfectdreams.etherealgambi.backend.EtherealGambi
+import net.perfectdreams.etherealgambi.backend.utils.SimpleImageInfo
 import net.perfectdreams.sequins.ktor.BaseRoute
 import java.io.File
 
@@ -28,44 +29,62 @@ class GetFileRoute(val m: EtherealGambi) : BaseRoute("/{file...}") {
 
             val fileWithUnknownVariant = completePath.last()
             val pathWithoutFile = completePath.dropLast(1)
-            val variantResult = m.getVariantFromFileName(fileWithUnknownVariant)
+            val variantResult = m.getVariantFromFileName(pathWithoutFile.joinToString("/"), fileWithUnknownVariant)
 
-                when (variantResult) {
-                    is EtherealGambi.UnsupportedVariantImageFormat -> {
-                        // Couldn't figure out an image from the URL... so let's check if we can serve the file "raw"!
-                        val file = File(m.files, completePath.joinToString("/"))
-                        if (file.exists())
-                            call.respondBytes(file.readBytes())
-                        else
-                            call.respondText("File not found", status = HttpStatusCode.NotFound)
-                        return
-                    }
-                    is EtherealGambi.VariantNotFound -> {
-                        call.respondText("Unknown Variant", status = HttpStatusCode.BadRequest)
-                        return
-                    }
-                    is EtherealGambi.VariantFound -> {
-                        val (variant, fileNameWithoutVariant) = variantResult
+            when (variantResult) {
+                is EtherealGambi.UnsupportedVariantImageFormat -> {
+                    // Couldn't figure out an image from the URL... so let's check if we can serve the file "raw"!
+                    val file = File(m.files, completePath.joinToString("/"))
+                    if (file.exists())
+                        call.respondBytes(file.readBytes())
+                    else
+                        call.respondText("File not found", status = HttpStatusCode.NotFound)
+                    return
+                }
+                is EtherealGambi.VariantNotFound -> {
+                    call.respondText("Unknown Variant", status = HttpStatusCode.BadRequest)
+                    return
+                }
+                is EtherealGambi.VariantFound -> {
+                    val (variant, fileNameWithoutVariant) = variantResult
 
-                        val path = (pathWithoutFile + fileNameWithoutVariant).joinToString("/")
+                    val path = (pathWithoutFile + fileNameWithoutVariant).joinToString("/")
 
-                        withContext(Dispatchers.IO) {
-                            val imageInfo = m.createImageInfoForImage(path)
+                    withContext(Dispatchers.IO) {
+                        val imageInfo = m.createImageInfoForImage(path)
 
-                            if (imageInfo == null) {
-                                call.respondText("Image not found", status = HttpStatusCode.NotFound)
-                                return@withContext
-                            }
-
-                            val file = imageInfo.createImageVariant(variant)
-
-                            call.respondBytes(
-                                file.readBytes(),
-                                variant.imageType.contentType
-                            )
+                        if (imageInfo == null) {
+                            call.respondText("Image not found", status = HttpStatusCode.NotFound)
+                            return@withContext
                         }
+
+                        val file = imageInfo.createImageVariant(variant)
+
+                        call.respondBytes(
+                            file.readBytes(),
+                            variant.imageType.contentType
+                        )
                     }
                 }
+
+                // Gets the original file
+                is EtherealGambi.OriginalFile -> {
+                    val path = variantResult.path
+
+                    val image = File(m.files, path).readBytes()
+                    val simpleImageInfo = SimpleImageInfo(image)
+
+                    call.respondBytes(
+                        image,
+                        contentType = when (simpleImageInfo.mimeType) {
+                            "image/png" -> ContentType.Image.PNG
+                            "image/gif" -> ContentType.Image.GIF
+                            "image/jpeg" -> ContentType.Image.JPEG
+                            else -> error("Unsupported mime type ${simpleImageInfo.mimeType}")
+                        }
+                    )
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
