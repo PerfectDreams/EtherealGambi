@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.cors)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.hocon)
 
     implementation(project(":common"))
 

@@ -9,9 +9,11 @@ import io.ktor.http.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import net.perfectdreams.etherealgambi.data.api.UploadFileRequest
 import net.perfectdreams.etherealgambi.data.api.requests.ImageVariantsRequest
 import net.perfectdreams.etherealgambi.data.api.responses.ImageVariantsResponse
 import java.io.Closeable
+import java.util.*
 
 class EtherealGambiClient(baseUrl: String) : Closeable {
     private val http = HttpClient(CIO)
@@ -23,6 +25,21 @@ class EtherealGambiClient(baseUrl: String) : Closeable {
                 setBody(
                     TextContent(
                         Json.encodeToString(ImageVariantsRequest(paths.toList())),
+                        ContentType.Application.Json
+                    )
+                )
+            }.bodyAsText()
+        )
+    }
+
+    suspend fun uploadFile(token: String, path: String, data: ByteArray) {
+        return Json.decodeFromString(
+            http.post("$baseUrl/api/v1/upload") {
+                header(HttpHeaders.Authorization, token)
+
+                setBody(
+                    TextContent(
+                        Json.encodeToString(UploadFileRequest(path, Base64.getEncoder().encodeToString(data))),
                         ContentType.Application.Json
                     )
                 )

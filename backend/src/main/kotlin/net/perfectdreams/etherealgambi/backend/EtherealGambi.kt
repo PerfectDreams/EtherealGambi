@@ -16,18 +16,16 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import net.perfectdreams.etherealgambi.backend.routes.GetFileRoute
+import net.perfectdreams.etherealgambi.backend.routes.api.v1.PostUploadFileRoute
 import net.perfectdreams.etherealgambi.backend.routes.api.v1.PostVariantsRoute
-import net.perfectdreams.etherealgambi.backend.utils.GIFImageInfo
-import net.perfectdreams.etherealgambi.backend.utils.ImageInfo
-import net.perfectdreams.etherealgambi.backend.utils.PNGImageInfo
-import net.perfectdreams.etherealgambi.backend.utils.SimpleImageInfo
+import net.perfectdreams.etherealgambi.backend.utils.*
 import net.perfectdreams.etherealgambi.data.*
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-class EtherealGambi {
+class EtherealGambi(val config: EtherealGambiConfig) {
     companion object {
         const val OPTIMIZATION_VERSION = 0
         private val logger = KotlinLogging.logger {}
@@ -54,7 +52,8 @@ class EtherealGambi {
 
     private val routes = listOf(
         GetFileRoute(this),
-        PostVariantsRoute(this)
+        PostVariantsRoute(this),
+        PostUploadFileRoute(this)
     )
 
     var originalImageInfos = ConcurrentHashMap<String, ImageInfo>()
