@@ -41,9 +41,7 @@ class GIFImageInfo(
 
                     generatedImageFile.writeBytes(originalImageFile.readBytes())
 
-                    // We don't care about the results
-                    if (variant.imageType != ImageType.GIF)
-                        m.pngQuant.optimize(generatedImageFile)
+                    // TODO: Use gifsicle to optimize the GIF!
 
                     data.variants.add(
                         ImageVariantInfoData(

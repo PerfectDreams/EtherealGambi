@@ -44,8 +44,7 @@ class PNGImageInfo(
                     generatedImageFile.writeBytes(originalImageFile.readBytes())
 
                     // We don't care about the results
-                    if (variant.imageType != ImageType.GIF)
-                        m.pngQuant.optimize(generatedImageFile)
+                    m.pngQuant.optimize(generatedImageFile)
 
                     data.variants.add(
                         ImageVariantInfoData(
@@ -85,24 +84,11 @@ class PNGImageInfo(
 
                         ImageIO.write(
                             x,
-                            when (variant.imageType) {
-                                ImageType.PNG -> "png"
-                                ImageType.GIF -> "gif"
-                                // ImageType.JPEG -> "jpeg"
-                            },
+                            "png",
                             generatedImageFile
                         )
 
                         m.pngQuant.optimize(generatedImageFile)
-
-                        data.variants.add(
-                            ImageVariantInfoData(
-                                EtherealGambi.OPTIMIZATION_VERSION,
-                                pathWithVariant,
-                                variant,
-                                generatedImageFile.length()
-                            )
-                        )
 
                         data.variants.add(
                             ImageVariantInfoData(

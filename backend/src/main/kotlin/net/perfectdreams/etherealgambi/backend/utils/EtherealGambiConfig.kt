@@ -11,4 +11,10 @@ data class EtherealGambiConfig(
         val name: String,
         val token: String
     )
+
+    @Serializable
+    data class OptimizationSettings(
+        val path: String,
+        val useOptiPNG: Boolean
+    )
 }
