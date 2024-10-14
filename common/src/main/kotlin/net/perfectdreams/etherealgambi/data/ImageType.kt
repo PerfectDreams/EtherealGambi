@@ -7,6 +7,6 @@ enum class ImageType(
     val contentType: ContentType
 ) {
     PNG("png", ContentType.Image.PNG),
-    GIF("gif", ContentType.Image.GIF)
-    // JPEG("jpg", ContentType.Image.JPEG)
+    GIF("gif", ContentType.Image.GIF),
+    JPEG("jpg", ContentType.Image.JPEG)
 }
