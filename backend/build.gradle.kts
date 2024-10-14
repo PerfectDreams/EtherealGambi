@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("ch.qos.logback:logback-classic:1.3.0-alpha14")
+    implementation("ch.qos.logback:logback-classic:1.5.10")
 
     implementation(libs.kotlin.logging)
     implementation(libs.ktor.server.netty)
