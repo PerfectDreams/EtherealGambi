@@ -35,11 +35,22 @@ class PostUploadFileRoute(val m: EtherealGambi) : BaseRoute("/api/v1/upload") {
 
         val fileData = Base64.getDecoder().decode(request.dataBase64)
 
-        val file = File(m.files, request.path)
+        if (request.path.contains("..")) {
+            call.respondText(Json.encodeToString(UploadFileResponse.PathTraversalDisallowed))
+            return
+        }
+
+        val writeToPath = "/${authorizationToken.folder}/${request.path}"
+        val file = File(m.files, writeToPath)
+        if (request.failIfFileAlreadyExists && file.exists()) {
+            call.respondText(Json.encodeToString(UploadFileResponse.FileAlreadyExists))
+            return
+        }
+
         val folder = file.parentFile
         folder.mkdirs()
         file.writeBytes(fileData)
 
-        call.respondText(Json.encodeToString(UploadFileResponse.Success))
+        call.respondText(Json.encodeToString(UploadFileResponse.Success(writeToPath)))
     }
 }

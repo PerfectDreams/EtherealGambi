@@ -10,6 +10,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.perfectdreams.etherealgambi.data.api.UploadFileRequest
+import net.perfectdreams.etherealgambi.data.api.UploadFileResponse
 import net.perfectdreams.etherealgambi.data.api.requests.ImageVariantsRequest
 import net.perfectdreams.etherealgambi.data.api.responses.ImageVariantsResponse
 import java.io.Closeable
@@ -32,14 +33,14 @@ class EtherealGambiClient(baseUrl: String) : Closeable {
         )
     }
 
-    suspend fun uploadFile(token: String, path: String, data: ByteArray) {
-        return Json.decodeFromString(
+    suspend fun uploadFile(token: String, path: String, failIfFileAlreadyExists: Boolean, data: ByteArray): UploadFileResponse {
+        return Json.decodeFromString<UploadFileResponse>(
             http.post("$baseUrl/api/v1/upload") {
                 header(HttpHeaders.Authorization, token)
 
                 setBody(
                     TextContent(
-                        Json.encodeToString(UploadFileRequest(path, Base64.getEncoder().encodeToString(data))),
+                        Json.encodeToString(UploadFileRequest(path, failIfFileAlreadyExists, Base64.getEncoder().encodeToString(data))),
                         ContentType.Application.Json
                     )
                 )

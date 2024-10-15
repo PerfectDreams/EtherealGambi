@@ -5,13 +5,20 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UploadFileRequest(
     val path: String,
-    val dataBase64: String
+    val failIfFileAlreadyExists: Boolean,
+    val dataBase64: String,
 )
 
 @Serializable
 sealed class UploadFileResponse {
     @Serializable
-    data object Success : UploadFileResponse()
+    data class Success(val path: String) : UploadFileResponse()
+
+    @Serializable
+    data object FileAlreadyExists : UploadFileResponse()
+
+    @Serializable
+    data object PathTraversalDisallowed : UploadFileResponse()
 
     @Serializable
     data object Unauthorized : UploadFileResponse()

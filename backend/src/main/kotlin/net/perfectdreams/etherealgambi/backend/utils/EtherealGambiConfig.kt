@@ -9,12 +9,7 @@ data class EtherealGambiConfig(
     @Serializable
     data class AuthorizationToken(
         val name: String,
-        val token: String
-    )
-
-    @Serializable
-    data class OptimizationSettings(
-        val path: String,
-        val useOptiPNG: Boolean
+        val folder: String,
+        val token: String,
     )
 }
