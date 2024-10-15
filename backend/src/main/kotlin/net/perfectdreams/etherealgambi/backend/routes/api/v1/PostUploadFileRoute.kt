@@ -21,13 +21,13 @@ class PostUploadFileRoute(val m: EtherealGambi) : BaseRoute("/api/v1/upload") {
     override suspend fun onRequest(call: ApplicationCall) {
         val authorization = call.request.header("Authorization")
         if (authorization == null) {
-            call.respondText(Json.encodeToString(UploadFileResponse.Unauthorized))
+            call.respondText(Json.encodeToString<UploadFileResponse>(UploadFileResponse.Unauthorized))
             return
         }
 
         val authorizationToken = m.config.authorizationTokens.firstOrNull { it.token == authorization }
         if (authorizationToken == null) {
-            call.respondText(Json.encodeToString(UploadFileResponse.Unauthorized))
+            call.respondText(Json.encodeToString<UploadFileResponse>(UploadFileResponse.Unauthorized))
             return
         }
 
@@ -36,14 +36,14 @@ class PostUploadFileRoute(val m: EtherealGambi) : BaseRoute("/api/v1/upload") {
         val fileData = Base64.getDecoder().decode(request.dataBase64)
 
         if (request.path.contains("..")) {
-            call.respondText(Json.encodeToString(UploadFileResponse.PathTraversalDisallowed))
+            call.respondText(Json.encodeToString<UploadFileResponse>(UploadFileResponse.PathTraversalDisallowed))
             return
         }
 
         val writeToPath = "/${authorizationToken.folder}/${request.path}"
         val file = File(m.files, writeToPath)
         if (request.failIfFileAlreadyExists && file.exists()) {
-            call.respondText(Json.encodeToString(UploadFileResponse.FileAlreadyExists))
+            call.respondText(Json.encodeToString<UploadFileResponse>(UploadFileResponse.FileAlreadyExists))
             return
         }
 
@@ -51,6 +51,6 @@ class PostUploadFileRoute(val m: EtherealGambi) : BaseRoute("/api/v1/upload") {
         folder.mkdirs()
         file.writeBytes(fileData)
 
-        call.respondText(Json.encodeToString(UploadFileResponse.Success(writeToPath)))
+        call.respondText(Json.encodeToString<UploadFileResponse>(UploadFileResponse.Success(writeToPath)))
     }
 }
