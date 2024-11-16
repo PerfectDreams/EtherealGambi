@@ -81,7 +81,7 @@ class EtherealGambi(val config: EtherealGambiConfig) {
             }
         )
 
-        val server = embeddedServer(CIO) {
+        val server = embeddedServer(CIO, port = 8080) {
             // Enables gzip and deflate compression
             install(Compression)
 
