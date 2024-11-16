@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import mu.KotlinLogging
 import net.perfectdreams.etherealgambi.backend.EtherealGambi
 import net.perfectdreams.etherealgambi.backend.utils.SimpleImageInfo
 import net.perfectdreams.sequins.ktor.BaseRoute
@@ -13,6 +14,7 @@ import java.io.File
 class GetFileRoute(val m: EtherealGambi) : BaseRoute("/{file...}") {
     companion object {
         val variantRegex = Regex("@([A-z0-9]+)")
+        private val logger = KotlinLogging.logger {}
     }
 
     override suspend fun onRequest(call: ApplicationCall) {
@@ -27,9 +29,13 @@ class GetFileRoute(val m: EtherealGambi) : BaseRoute("/{file...}") {
             if (completePath.any { it == ".." })
                 return
 
+            logger.info { "Trying to get file $completePath" }
+
             val fileWithUnknownVariant = completePath.last()
             val pathWithoutFile = completePath.dropLast(1)
             val variantResult = m.getVariantFromFileName(pathWithoutFile.joinToString("/"), fileWithUnknownVariant)
+
+            logger.info { "Get file $completePath result is $variantResult" }
 
             when (variantResult) {
                 is EtherealGambi.UnsupportedVariantImageFormat -> {
@@ -86,7 +92,7 @@ class GetFileRoute(val m: EtherealGambi) : BaseRoute("/{file...}") {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.warn(e) { "Something went wrong while trying to get file!" }
         }
     }
 }
