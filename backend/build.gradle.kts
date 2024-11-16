@@ -15,7 +15,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.10")
 
     implementation(libs.kotlin.logging)
-    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.compression)
     implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.cors)
@@ -23,9 +23,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.hocon)
 
     implementation(project(":common"))
-
-    // Sequins
-    implementation("net.perfectdreams.sequins.ktor:base-route:1.0.4")
 
     testImplementation(kotlin("test"))
 }

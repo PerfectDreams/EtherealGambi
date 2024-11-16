@@ -4,10 +4,11 @@ import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.cio.*
 import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -80,7 +81,7 @@ class EtherealGambi(val config: EtherealGambiConfig) {
             }
         )
 
-        val server = embeddedServer(Netty) {
+        val server = embeddedServer(CIO) {
             // Enables gzip and deflate compression
             install(Compression)
 
